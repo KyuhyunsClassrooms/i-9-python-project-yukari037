@@ -30,17 +30,12 @@
 # 3번 열: 활동 유형
 # ------------------------------------------------------------
 
-thrust = int(input())
-weight = int(input())
-fuel = int(input())
+import time
 
-activities = [
-    ["산책하기", 30, "피곤", "운동"],
-    ["짧은 낮잠", 20, "피곤", "휴식"],
-    ["좋아하는 음악 듣기", 10, "우울", "휴식"],
-    ["문제집 3쪽 풀기", 40, "차분", "공부"],
-    ["방 정리하기", 25, "답답", "생활"],
-    ["친구에게 연락하기", 15, "우울", "소통"],
+launch_checklist = [
+    ["추력(kg)", 0, 1200, "X"],
+    ["무게(kg)", 0, 1000, "X"],
+    ["연료(%)", 0, 90, "X"]
 ]
 
 
@@ -48,48 +43,53 @@ activities = [
 # 2. 함수 정의
 # ------------------------------------------------------------
 
-def show_intro():
-    """프로그램 제목과 안내를 출력한다."""
-    print("=" * 40)
-    print("AI 활용 자유 주제 파이썬 미니 프로젝트")
-    print("예시: 기분과 시간에 따른 활동 추천기")
-    print("=" * 40)
+def conditions(launch_checklist):
+    print("로켓 발사 조건 데이터를 입력하세요")
+    launch_checklist[0][1] = int(input(f"{launch_checklist[0][0]}을 입력하세요:"))
+    launch_checklist[1][1] = int(input(f"{launch_checklist[1][1]}을 입력하세요:"))
+    launch_checklist[2][1] = int(input(f"{launch_checklist[2][1]}을 입력하세요:"))
+    print("완료\n")
+    return launch_checklist
 
+def check(launch_checklist):
+    thrust = launch_checklist[0][1]
+    weight = launch_checklist[1][1]
+    fuel = launch_checklist[2][1]
 
-def get_user_input():
-    """사용자에게 기분과 남은 시간을 입력받는다."""
-    mood = input("현재 기분을 입력하세요. 예: 피곤, 우울, 차분, 답답: ")
-    minutes = int(input("사용 가능한 시간을 분 단위로 입력하세요: "))
-    return mood, minutes
+    all_pass = True
 
-
-def find_recommendations(data, mood, minutes):
-    """2차원 리스트를 반복하며 조건에 맞는 활동을 찾는다."""
-    results = []
-
-    for row in data:
-        name = row[0]
-        required_minutes = row[1]
-        recommended_mood = row[2]
-        activity_type = row[3]
-
-        # 조건문: 사용자의 기분과 시간이 활동 조건에 맞는지 판단한다.
-        if recommended_mood == mood and required_minutes <= minutes:
-            results.append([name, required_minutes, activity_type])
-
-    return results
-
-
-def print_result(results):
-    """추천 결과를 출력한다."""
-    print("\n[추천 결과]")
-
-    if len(results) == 0:
-        print("조건에 맞는 활동이 없습니다.")
-        print("시간을 늘리거나 다른 기분을 입력해 보세요.")
+    if thrust >= weight * 1.2:
+        launch_checklist[0][3] = "O"
     else:
-        for item in results:
-            print(f"- {item[0]} / {item[1]}분 / 유형: {item[2]}")
+        launch_checklist[0][3] = "X"
+        all_pass = False
+
+    if fuel >= 90:
+        launch_checklist[2][3] = "O"
+    else:
+        launch_checklist[2][3] = "X"
+        all_pass = False
+
+    return all_pass
+
+
+def countdown():
+    print("launch starts")
+    
+    for i in range(10, 0, -1):
+        print(i)
+        time.sleep(1)
+
+    print("발사합니다")
+
+def result():
+    if all_pass == True:
+        print("SUCCESS")
+
+    else:
+        print("FAILED...")
+
+
 
 
 def main():
